@@ -38,6 +38,8 @@ function button_click(index) {
 	}
 }
 function detect() {
+	const start = performance.now();  // 記錄開始時間
+
 	for (i=0;i<361;i++)  //清除前次結果
 		if (button[i].style.backgroundColor=="yellow")
 			button[i].style.backgroundColor="white"
@@ -79,6 +81,10 @@ function detect() {
 		for (j=i;j>=i-(mh-1)*19;j-=19)
 			if (parseInt(button[j].value)>"0")
 				button[j].style.backgroundColor="yellow";
+	const end = performance.now();    // 記錄結束時間
+	const executionTime = end - start;  // 計算執行時間
+	info.innerText+="執行時間" + executionTime.toFixed(4) + "毫秒";
+
 }
 </script>
 </head>
