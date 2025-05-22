@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>無標題文件</title>
+
+<script>
+var audioBg= new Audio('hsnu5.mp3');  //宣告音效
+var audioPoint= new Audio('point.mp3');
+var audioEnd= new Audio('gameover.mp3');
+var clock1 = 0; //宣告一個時鐘clock
+window.onload = function(){ //第一題，視窗載入時，造19*19個按鈕方陣
+	var map = "0000000000000000000011011011001111101001011010010001111100011111100101101100011011110111111111000101110101101111000111000010011110010001110111101010101001010001100101010100111001111110101000011101111111101111000111111111011110100101011111100001110011101111111011111001101100011111011000101101101110011010011111110111100011001110111101011111100000000000000000000";
+	for(var i=0;i<361;i++ ){
+		var input = document.createElement("input");
+		input.type = "button"; //宣告成按鈕
+		input.id= "button";//同名宣告，以便後續可以用button[i]去存取
+		input.style.width="50px";
+		input.style.height="50px";
+		input.style.fontSize="25px";
+		input.onclick=button_click(i);
+		if (map.charAt(i)=='0')  //馬賽克磚
+			input.style.backgroundColor="red";		
+		else
+			input.style.backgroundColor="white";		
+		if (i<=18 || i>=342 || i%19==0 || i%19==18)  //邊界處理
+		//input.style.backgroundColor=colorB;	
+		input.style.visibility="hidden";
+		//input.onclick=abc(i);
+		document.getElementById("form1").appendChild(input);
+		if (i % 19==18) //19個換行
+			document.getElementById("form1").appendChild( document.createElement("br"));		
+	}//for end
+}//onload end
+function button_click(index) {
+	return function() {
+		if (button[index].style.backgroundColor!="red")
+			button[index].style.backgroundColor="red";
+		else
+			button[index].style.backgroundColor="white";
+	}
+}
+function detect() {
+	for (i=0;i<361;i++)  //清除前次結果
+		if (button[i].style.backgroundColor=="yellow")
+			button[i].style.backgroundColor="white"
+	for (i=0;i<19;i++)   //處理最上面一排(邊界
+		button[i].value="0";
+	//第二題，計算累計高度
+	for (i=19;i<button.length;i++)
+		if (button[i].style.backgroundColor=="white") 
+			button[i].value=button[i-19].value-(-1);
+		else 
+			button[i].value=0;
+	//第三題，找出最大矩形
+	mx=0
+	mw=0
+	mh=0
+	mi=0
+	for (i=19;i<button.length;i++) {
+		h=parseInt(button[i].value)
+		w=1
+		if (mx<h*w)
+			mx=h*w
+		for (j=i-1;j>0;j--) {
+			if (button[j].style.backgroundColor=="red") 
+				break;
+			if (parseInt(button[j].value)<h)
+				h=parseInt(button[j].value);
+			w++
+			if (mx<h*w) {
+				mx=h*w	
+				mw=w
+				mh=h
+				mi=i
+			}
+		}
+	}
+	info.innerText="最大面積:" +mx +"寬:"+mw+"高:"+mh+"右下角:"+mi;
+	//第四題，把降落點以黃色標示
+	for (i=mi;i>=mi-mw+1;i--)
+		for (j=i;j>=i-(mh-1)*19;j-=19)
+			if (parseInt(button[j].value)>"0")
+				button[j].style.backgroundColor="yellow";
+}
+</script>
+</head>
+<body>
+<h1>懸停避障<span style="width:1000px;height:550px; border-bottom:thick; border-bottom-color:#6F0">
+  <input type="button" id="detect" value="偵測最大矩形平地" onclick="detect();" style=" font-size:32px"/>
+</span><br />
+  
+</h1>
+<table>
+<tr><td><div id="form1"></div></td><td><img src="a.jpg" alt="" width="239" height="305" /></td></tr></table>
+
+<h1>
+  <label id="info">aaa</label>
+</h1>
+</body>
+</html>
+
+<!--<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>無標題文件</title>
+<script>
+function abc(index) {
+	 return function () {
+		if (this.value==" ") {
+			this.value=0;
+			this.style.backgroundColor="#00FF00";
+			var a=0,b=0;
+			for (var i=0;i<100;i++) {
+				if (eval("button"+i).value>a) {
+					a=eval("button"+i).value;
+					b=i;
+				}
+			}
+			eval("button"+b).style.backgroundColor="#FF0000";
+			eval("button"+b).value=" ";
+			info.innerText="位置:"+b+";電量:"+a;
+//			alert(a);
+//			alert(b);
+		}
+			
+	 }
+}
+window.onload = function(){
+	// 定義一個陣列 arrs
+	//var arrs = new Array();
+	// 迴圈新增
+	for(var i=0;i<100;i++ ){
+	// 迴圈新增兩個 input type="button" value="新增" i
+	var input = document.createElement("input");
+	input.type = "button";
+	input.id= "button"+i;
+	input.value = Math.floor(Math.random()*100+1);
+	input.style.backgroundColor="#00FF00";
+	input.style.width="100px";
+	input.onclick=abc(i);
+	
+	// 記得把建立的 input 放入 arrs 中
+	//arrs.push(input);
+	// 然後把 input 放入 id="add" 的div中
+	document.getElementById("form1").appendChild(input);
+	if (i % 10==9) 
+		document.getElementById("form1").appendChild( document.createElement("br"));
+	
+	}
+	button98.value=" ";
+	button99.value=" ";
+	button98.style.backgroundColor="#FF0000";
+	button99.style.backgroundColor="#FF0000";
+}
+</script>
+</head>
+<body>
+<div id="form1"></div>
+<label id="info">aaa</label>
+
+</body>
+</html>-->
